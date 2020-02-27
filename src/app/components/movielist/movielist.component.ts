@@ -4,6 +4,7 @@ import { Movie } from 'src/app/models/movie';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { tap } from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-movielist',
@@ -14,13 +15,13 @@ export class MovielistComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private movieService: MovieService) { }
+  constructor(private movieService: MovieService, private router: Router) { }
   years: number[] = [];
   selectedYear: number = 0;
   public currentMovies = new MatTableDataSource<Movie>();
   displayedColumns: string[] = ['poster_path', 'title', 'release_date', 'details'];
   totalMovies : number = 0;
-
+  isSearch : boolean = false;
 
   pullyears = (startYear: number, endYear: number): void => {
     while ( startYear <= endYear ) {
@@ -34,6 +35,7 @@ export class MovielistComponent implements OnInit {
 
   refreshMovies(event){
     if (event.isUserInput) {
+        this.isSearch = false;
         this.selectedYear = event.source.value;
         this.movieService.getMoviesByYear(1,20,this.selectedYear).subscribe(data => {
           this.currentMovies = new MatTableDataSource(data.results);
@@ -48,24 +50,19 @@ export class MovielistComponent implements OnInit {
   }
 
   paginatorChange(event) {
-
     this.movieService.getMoviesByYear(event.pageIndex+1,this.paginator.pageSize,this.selectedYear).subscribe(data => {
       this.currentMovies = new MatTableDataSource(data.results);
-      //this.totalMovies = data.total_results;
     });
-
-    //this.movieService.getMoviesByYear(this.paginator.pageIndex,this.paginator.pageSize,this.selectedYear);
-    /* .subscribe(data => {
-      this.currentMovies = new MatTableDataSource(data.results);
-      this.totalMovies = data.total_results;
-    });
-
-    this.movieService.getMoviesByYear(
-        this.course.id,
-        '',
-        'asc',
-        this.paginator.pageIndex,
-        this.paginator.pageSize); */
   }
 
+  onSearched(searchObj: any){
+    this.isSearch = true;
+    this.currentMovies = new MatTableDataSource(searchObj.results);
+    this.totalMovies = searchObj.total_results;
+    this.paginator.pageIndex = 0;
+  }
+
+  public goToDetails = (id:number) => {
+    this.router.navigate(['/movie', id]);
+  }
 }

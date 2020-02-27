@@ -1,0 +1,9 @@
+<form class="login-form" [formGroup]="searchForm" (ngSubmit)="searchMovie()">
+  <mat-form-field class="full-width">
+    <mat-label>Search Movie</mat-label>
+    <input matInput placeholder="" value="" formControlName="term">
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="search-button" (click)="searchMovie()">
+    Search
+    </button>
+</form>

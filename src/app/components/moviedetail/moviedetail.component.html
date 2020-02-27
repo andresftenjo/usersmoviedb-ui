@@ -1,0 +1,28 @@
+<div></div>
+
+<mat-card class="movie-details-card" *ngIf="this.currentMovie">
+  <mat-card-header>
+    <mat-card-title>{{this.currentMovie.title}}</mat-card-title>
+    <mat-card-subtitle class="movie-details-subtitle">
+      <span *ngFor="let genre of this.currentMovie.genres">
+        {{genre.name}}
+      </span>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <app-movieposter [posterSource]="this.currentMovie.backdrop_path" [posterSize]="'big'"></app-movieposter>
+  <mat-card-content class="movie-detail-content">
+    <p>
+      <b>Overview:</b> {{this.currentMovie.overview}}
+    </p>
+    <p>
+      <b>Release date:</b> {{this.currentMovie.release_date}}
+    </p>
+    <app-rating *ngIf="this.currentMovie" [idMovie]="this.currentMovie.id"></app-rating>
+  </mat-card-content>
+  <mat-card-actions class="movie-detail-actions-container">
+    <button mat-raised-button color="accent" routerLink="/">Back</button>
+  </mat-card-actions>
+</mat-card>
+
+<app-moviecomments *ngIf="this.currentMovie" [idMovie]="this.currentMovie.id"></app-moviecomments>
+<app-logout></app-logout>

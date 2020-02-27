@@ -1,0 +1,21 @@
+<mat-card class="example-card">
+
+  <form class="login-form" [formGroup]="commentsForm">
+    <mat-form-field class="full-width">
+      <mat-label>Add Comment</mat-label>
+      <input matInput placeholder="" value="" formControlName="comment">
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="addComment-button" (click)="addComment()">
+      Send
+      </button>
+  </form>
+
+  <h3>Movie Comments:</h3>
+  <mat-card-header *ngFor="let comment of this.comments">
+    <div mat-card-avatar class="example-profile-image"></div>
+    <mat-card-title>{{comment.Comment}}</mat-card-title>
+    <mat-card-subtitle>{{comment.UserName}}</mat-card-subtitle>
+  </mat-card-header>
+</mat-card>
+
+

@@ -17,8 +17,13 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { MatSelectModule } from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatIconModule} from '@angular/material/icon';
 
 import { MovieposterComponent } from './components/movieposter/movieposter.component';
+import { SearchmovieComponent } from './components/searchmovie/searchmovie.component';
+import { MoviedetailComponent } from './components/moviedetail/moviedetail.component';
+import { MoviecommentsComponent } from './components/moviecomments/moviecomments.component';
+import { RatingComponent } from './components/rating/rating.component';
 
 
 @NgModule({
@@ -27,7 +32,11 @@ import { MovieposterComponent } from './components/movieposter/movieposter.compo
     MovielistComponent,
     LoginComponent,
     LogoutComponent,
-    MovieposterComponent
+    MovieposterComponent,
+    SearchmovieComponent,
+    MoviedetailComponent,
+    MoviecommentsComponent,
+    RatingComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +50,8 @@ import { MovieposterComponent } from './components/movieposter/movieposter.compo
     ReactiveFormsModule,
     MatSelectModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatIconModule
   ],
   providers: [Authguard],
   bootstrap: [AppComponent]
