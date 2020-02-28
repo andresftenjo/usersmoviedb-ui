@@ -4,6 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { User } from '../models/user';
 import { MovieRating } from '../models/movierating';
+import { LocalstorageService } from './localstorage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,21 +12,20 @@ import { MovieRating } from '../models/movierating';
 export class RatingService {
 
   private apiUserRatings = 'http://localhost:44332/api';
-  private inServiceUser: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
 
-  constructor(private http: HttpClient) {
-    this.inServiceUser = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.inServiceUser.asObservable();
+  constructor(private http: HttpClient, private localStorageService: LocalstorageService) {
+  }
+
+  getCurrentUser(){
+    return this.localStorageService.getCurrentUser().value;
   }
 
   getMovieRatings(movieId: number) : Observable<MovieRating> {
-
+    const currentUser = this.getCurrentUser();
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
-    const idUser = this.inServiceUser.value.UserId;
-
+    const idUser = currentUser.UserId;
     let url = `${this.apiUserRatings}/rank?idUser=${idUser}&idMovie=${movieId}`;
     return this.http.get<MovieRating>(url, headers)
       .pipe(
@@ -35,11 +35,12 @@ export class RatingService {
   }
 
   postRating(movieRating: MovieRating): Observable<MovieRating> {
+    const currentUser = this.getCurrentUser();
     let url = `${this.apiUserRatings}/rank`;
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
-    movieRating.IdUser = this.inServiceUser.value.UserId;
+    movieRating.IdUser = currentUser.UserId;
 
     return this.http.post<MovieRating>(url, movieRating, headers).pipe(
       tap(_ => console.log('posted rank')),
@@ -48,9 +49,10 @@ export class RatingService {
   }
 
   putRating(id:number, movieRating: MovieRating): Observable<MovieRating> {
+    const currentUser = this.getCurrentUser();
     let url = `${this.apiUserRatings}/rank/?Id=${id}`;
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
 
     return this.http.put<MovieRating>(url, movieRating, headers).pipe(
@@ -60,9 +62,10 @@ export class RatingService {
   }
 
   deleteRating(id: number): Observable<MovieRating> {
+    const currentUser = this.getCurrentUser();
     const url = `${this.apiUserRatings}/rank?Id=${id}`;
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
     return this.http.delete<MovieRating>(url, headers).pipe(
       tap(_ => console.log('deleted rank')),

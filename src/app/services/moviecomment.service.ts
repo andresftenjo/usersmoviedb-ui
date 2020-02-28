@@ -4,6 +4,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { User } from '../models/user';
 import { Moviecomment } from '../models/moviecomment';
+import { LocalstorageService } from './localstorage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,18 @@ import { Moviecomment } from '../models/moviecomment';
 export class MoviecommentService {
 
   private apiUserComments = 'http://localhost:44332/api';
-  private inServiceUser: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
 
-  constructor(private http: HttpClient) {
-    this.inServiceUser = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.inServiceUser.asObservable();
+  constructor(private http: HttpClient, private localStorageService : LocalstorageService) {
+  }
+
+  getCurrentUser(){
+    return this.localStorageService.getCurrentUser().value;
   }
 
   getMovieComments(movieId: number) : Observable<Moviecomment[]> {
-
+    const currentUser = this.getCurrentUser();
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
 
     let url = `${this.apiUserComments}/comments?idMovie=${movieId}`;
@@ -34,12 +35,12 @@ export class MoviecommentService {
   }
 
   postComment(movieComment: Moviecomment): Observable<Moviecomment> {
+    const currentUser = this.getCurrentUser();
     let url = `${this.apiUserComments}/comment`;
     const headers = {
-      headers: new HttpHeaders({ 'Authorization': 'bearer ' + this.inServiceUser.value.access_token })
+      headers: new HttpHeaders({ 'Authorization': 'bearer ' + currentUser.access_token })
     };
-    movieComment.IdUser = this.inServiceUser.value.UserId;
-
+    movieComment.IdUser = currentUser.UserId;
     return this.http.post<Moviecomment>(url, movieComment, headers).pipe(
       tap(_ => console.log('posted comment')),
       catchError(this.handleError<Moviecomment>('postComment'))

@@ -29,7 +29,7 @@ export class MovieService {
   }
 
   searchMoviesByYear(page: number, pageSize: number, year: number, term: string) : Observable<any> {
-    let url = `${this.apiHostMovies}/search/movie?api_key=${this.api_key}&query=${term}&include_adult=false&page=${page}&year=${year}`;
+    let url = `${this.apiHostMovies}/search/movie?api_key=${this.api_key}&query=${term}&include_adult=false&page=${page}&primary_release_year=${year}`;
     return this.http.get<any[]>(url, this.httpOptions)
       .pipe(
         tap(_ => console.log('fetched Movies from search')),

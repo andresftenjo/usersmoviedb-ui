@@ -69,7 +69,8 @@ export class RatingComponent implements OnInit {
   }
   deleteRating(id: number){
     this.ratingService.deleteRating(id).subscribe(data => {
-        this.getRating(this.idMovie);
+        //this.getRating(this.idMovie);
+        this.isNewRating = true;
     });
   }
   setRating(rating: number){
@@ -148,6 +149,8 @@ export class RatingComponent implements OnInit {
         this.showFill4 = false;
         this.showBorder5 = true;
         this.showFill5 = false;
+
+        this.setRating(rating);
       } else if(rating === 2){
         this.showBorder1 = false;
         this.showFill1 = true;
@@ -159,6 +162,7 @@ export class RatingComponent implements OnInit {
         this.showFill4 = false;
         this.showBorder5 = true;
         this.showFill5 = false;
+        this.setRating(rating);
       } else if(rating === 3){
         this.showBorder1 = false;
         this.showFill1 = true;
@@ -170,6 +174,7 @@ export class RatingComponent implements OnInit {
         this.showFill4 = false;
         this.showBorder5 = true;
         this.showFill5 = false;
+        this.setRating(rating);
       } else if(rating === 4){
         this.showBorder1 = false;
         this.showFill1 = true;
@@ -181,6 +186,7 @@ export class RatingComponent implements OnInit {
         this.showFill4 = true;
         this.showBorder5 = true;
         this.showFill5 = false;
+        this.setRating(rating);
       }else if(rating === 5){
         this.showBorder1 = false;
         this.showFill1 = true;
@@ -192,6 +198,7 @@ export class RatingComponent implements OnInit {
         this.showFill4 = true;
         this.showBorder5 = false;
         this.showFill5 = true;
+        this.setRating(rating);
       }
     }
   }
