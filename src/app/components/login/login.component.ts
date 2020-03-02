@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   returnUrl: string;
+  loadingText : string = "Login";
 
   constructor(
     private formBuilder: FormBuilder,
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.loadingText = "Login";
     this.loginForm = this.formBuilder.group({
         username: ['', Validators.required],
         password: ['', Validators.required]
@@ -37,10 +39,12 @@ export class LoginComponent implements OnInit {
         return;
     }
 
+    this.loadingText = "Loading..."
     this.loginService.login(this.f.username.value, this.f.password.value)
         .subscribe((datatoken: any) => {
         this.loginService.authenticate()
           .subscribe((datauser: any) => {
+            this.loadingText = "Login";
             this.router.navigate([this.returnUrl]);
         });
     });
